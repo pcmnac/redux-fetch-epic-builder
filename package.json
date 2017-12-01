@@ -54,15 +54,18 @@
     "webpack": "^3.6.0"
   },
   "peerDependencies": {
-    "react": ">= 0.11.2 < 16.0.0"
+    "react": ">= 0.11.2 < 16.0.0",
+    "lodash": "^4.17.4",
+    "redux-observable": ">= 0.16.0",
+    "rxjs": "^5.4.3"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/survivejs/react-component-boilerplate.git"
+    "url": "https://github.com/pcmnac/redux-fetch-epic-builder.git"
   },
-  "homepage": "https://survivejs.github.io/react-component-boilerplate/",
+  "homepage": "https://github.com/pcmnac/redux-fetch-epic-builder/",
   "bugs": {
-    "url": "https://github.com/survivejs/react-component-boilerplate/issues"
+    "url": "https://github.com/pcmnac/redux-fetch-epic-builder/issues"
   },
   "jest": {
     "collectCoverage": true,
