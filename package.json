@@ -1,8 +1,8 @@
 {
-  "name": "react-component-boilerplate",
-  "description": "Boilerplate for React.js components",
-  "author": "Juho Vepsalainen",
-  "user": "survivejs",
+  "name": "redux-fetch-epic-builder",
+  "description": "An utilitary lib for build \"fetch actions\" and generic EPICs handled by redux-observable.",
+  "author": "pcmnac",
+  "user": "pcmnac",
   "version": "6.1.2",
   "scripts": {
     "start": "catalog start docs",
