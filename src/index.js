@@ -50,8 +50,8 @@ const doFetch = (
     const finalHost = host ? host : defaultHost;
     const finalQuery = query ? ('?' + queryString.stringify(query)) : '';
 
-    return fetch(`${finalHost}${path}${finalQuery}`, 
-        options).then((response) => {
+    return fetch(`${finalHost}${path}${finalQuery}`, options)
+        .then((response) => {
             if (response.ok) {
                 return response.json();
             }
@@ -59,16 +59,18 @@ const doFetch = (
         });
 }
 
-const fetchSuccess = action => result => ({
-    ...action,
+const defaultTransformer = action => action;
+
+const fetchSuccess = (action, transformer = defaultTransformer) => result => transformer({
     type: successType(action.type),
     result,
+    source: action,
 });
 
-const fetchError = (action, error) => ({
-    ...action,
+const fetchError = (action, error, transformer = defaultTransformer) => transformer({
     type: errorType(action.type),
     error,
+    source: action,
 })
 
 export const successType = type => type + SUCCESS_SUFFIX;
@@ -88,7 +90,7 @@ const doBuildEpic = (options, type, mockFetch) => action$ => {
     return action$.ofType(type)
         .mergeMap(action =>
             Observable.from(_fetch(action, { ...defaultOptions, ...options }))
-                .map(fetchSuccess(type, action.extra, action.alerts))
-                .catch(error => Observable.of(fetchError(action, error)))
+                .map(fetchSuccess(action, options.successTransformer))
+                .catch(error => Observable.of(fetchError(action, error, options.errorTransformer)))
             );
 }
