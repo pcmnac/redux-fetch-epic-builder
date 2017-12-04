@@ -6,6 +6,7 @@
 //   Simulate
 // } from 'react-addons-test-utils';
 import { expect } from 'chai';
+import { createBuilder } from '../src';
 
 describe('Boilerplate', function () {
   it('should do boilerplate things', function () {
