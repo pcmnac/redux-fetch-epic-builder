@@ -59,12 +59,17 @@ const doFetch = (
         });
 }
 
-const fetchSuccess = (type, extra, alerts) => result => ({
-    type: successType(type),
+const fetchSuccess = action => result => ({
+    ...action,
+    type: successType(action.type),
     result,
-    extra,
-    alert: alerts ? alerts.success : {},
 });
+
+const fetchError = (action, error) => ({
+    ...action,
+    type: errorType(action.type),
+    error,
+})
 
 export const successType = type => type + SUCCESS_SUFFIX;
 
@@ -84,11 +89,6 @@ const doBuildEpic = (options, type, mockFetch) => action$ => {
         .mergeMap(action =>
             Observable.from(_fetch(action, { ...defaultOptions, ...options }))
                 .map(fetchSuccess(type, action.extra, action.alerts))
-                .catch(error => Observable.of({
-                    type: errorType(type),
-                    result: error,
-                    extra: action.extra,
-                    alert: action.alerts ? action.alerts.error : undefined,
-                }))
+                .catch(error => Observable.of(fetchError(action, error)))
             );
 }
