@@ -17,7 +17,6 @@ const doFetch = (
         credentials,
     },
     { // options
-        useMocks = process.env.MOCKS_IN_PROD === 'true',
         jwtGetter,
         defaultHost,
     }
@@ -78,14 +77,15 @@ export const successType = type => type + SUCCESS_SUFFIX;
 export const errorType = type => type + ERROR_SUFFIX;
 
 const defaultOptions = {
-    useMocks: true,
+    useMocks: false,
 }
 
 export const createBuilder = options => doBuildEpic.bind(null, options);
 
 const doBuildEpic = (options, type, mockFetch) => action$ => {
 
-    const _fetch = mockFetch ? mockFetch : doFetch;
+    const _fetch = (mockFetch && options.useMocks) ? 
+        mockFetch : doFetch;
 
     return action$.ofType(type)
         .mergeMap(action =>
