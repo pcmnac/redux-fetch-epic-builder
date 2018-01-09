@@ -4,6 +4,13 @@ import queryString from 'query-string';
 const SUCCESS_SUFFIX = '_SUCCESS';
 const ERROR_SUFFIX = '_ERROR';
 
+class FetchError extends Error {
+    constructor(message, json) {
+        super(message); // (1)
+        this.name = "FetchError"; // (2)
+    }
+}
+
 const doFetch = (
     { // action
         host, 
@@ -54,7 +61,10 @@ const doFetch = (
             if (response.ok) {
                 return response.json();
             }
-            throw new Error('Server returned an error. ' + response.status + " - " + response.statusText);
+            throw new FetchError(
+                'Server returned an error. ' + response.status + " - " + response.statusText,
+                response.json(),
+            );
         });
 }
 
