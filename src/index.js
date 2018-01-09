@@ -8,6 +8,7 @@ class FetchError extends Error {
     constructor(message, json) {
         super(message); // (1)
         this.name = "FetchError"; // (2)
+        this.json = json;
     }
 }
 
