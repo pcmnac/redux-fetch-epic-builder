@@ -71,37 +71,64 @@ const doFetch = (
 
 const defaultTransformer = action => action;
 
-const fetchSuccess = (action, transformer = defaultTransformer) => result => transformer({
-    type: successType(action.type),
-    result,
-    source: action,
-});
+const forceObservable = transformed => {
+    if (transformed instanceof Observable) {
+        console.log('transformed is already an observable');
+    } else if (transformed instanceof Promise) {
+        console.log('creating observable from promise', transformed);
+        transformed = Observable.from(transformed);
+    } else {
+        console.log('creating observable from object', transformed);
+        transformed = Observable.of(transformed);
+    }
 
-const fetchError = (action, error, transformer = defaultTransformer) => transformer({
-    type: errorType(action.type),
-    error,
-    source: action,
-})
+    return transformed;
+}
 
-export const successType = type => type + SUCCESS_SUFFIX;
+const fetchSuccess = (action, transformer = defaultTransformer) => result => {
+    let transformed = transformer({
+        type: successType(action.type),
+        result,
+        source: action,
+    });
 
-export const errorType = type => type + ERROR_SUFFIX;
+    return forceObservable(transformed);
+};
+
+const fetchError = (action, error, transformer = defaultTransformer) => {
+    let transformed = transformer({
+        type: errorType(action.type),
+        error,
+        source: action,
+    });
+
+    return forceObservable(transformed);
+};
+
+const successType = type => type + SUCCESS_SUFFIX;
+
+const errorType = type => type + ERROR_SUFFIX;
 
 const defaultOptions = {
     useMocks: false,
 }
 
-export const createBuilder = options => doBuildEpic.bind(null, options);
+const createBuilder = options => doBuildEpic.bind(null, options);
 
 const doBuildEpic = (options, type, mockFetch) => action$ => {
 
-    const _fetch = (mockFetch && options.useMocks) ? 
-        mockFetch : doFetch;
+    const _fetch = (mockFetch && options.useMocks) ? mockFetch : doFetch;
 
     return action$.ofType(type)
         .mergeMap(action =>
             Observable.from(_fetch(action, { ...defaultOptions, ...options }))
-                .map(fetchSuccess(action, options.successTransformer))
-                .catch(error => Observable.of(fetchError(action, error, options.errorTransformer)))
+                .mergeMap(fetchSuccess(action, options.successTransformer))
+                .catch(error => fetchError(action, error, options.errorTransformer))
             );
+}
+
+export {
+    createBuilder,
+    successType,
+    errorType,
 }

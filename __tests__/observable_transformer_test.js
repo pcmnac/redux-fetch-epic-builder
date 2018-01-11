@@ -1,19 +1,28 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ActionsObservable } from 'redux-observable';
 import { expect } from 'chai';
 import { createBuilder, successType, errorType } from '../src';
 import { async } from './utils';
 
+const transformer = action => {
+    return Observable.of({
+        ...action,
+        transformed: true,
+    });
+}
+
 const buildEpic = createBuilder({
     useMocks: true,
+    successTransformer: transformer,
+    errorTransformer: transformer,
 });
 
 const TEST_ACTION = 'TEST_ACTION';
 const TEST_ACTION_SUCCESS = successType(TEST_ACTION);
 const TEST_ACTION_ERROR = errorType(TEST_ACTION);
 
-describe('test success', function () {
-    it('should emit a success action', function (done) {
+describe('test success with observable transformer', function () {
+    it('should emit a success action transformed', function (done) {
 
         const action = {
             type: TEST_ACTION,
@@ -31,13 +40,13 @@ describe('test success', function () {
 
         const $results = epic($actions);
 
-        $store.subscribe(data => console.log(data));
         $results.subscribe((data) => {
             async(() => {
                 expect(data).to.deep.equal({
                     type: TEST_ACTION_SUCCESS,
                     result: expectedResult,
                     source: action,
+                    transformed: true,
                 });
             }, done);
         });
