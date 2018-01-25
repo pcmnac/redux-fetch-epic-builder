@@ -5,10 +5,12 @@ const SUCCESS_SUFFIX = '_SUCCESS';
 const ERROR_SUFFIX = '_ERROR';
 
 class FetchError extends Error {
-    constructor(message, json) {
+    constructor(status, message, json) {
         super(message); // (1)
         this.name = "FetchError"; // (2)
+        this.status = status;
         this.json = json;
+        this.type = 'server-error';
     }
 }
 
@@ -63,8 +65,9 @@ const doFetch = (
                 return response.json();
             }
             throw new FetchError(
+                response.status,
                 'Server returned an error. ' + response.status + " - " + response.statusText,
-                response.json(),
+                response.json().catch(() => ({ invalidJson: true })),
             );
         });
 }
@@ -73,12 +76,10 @@ const defaultTransformer = action => action;
 
 const forceObservable = transformed => {
     if (transformed instanceof Observable) {
-        console.log('transformed is already an observable');
+        // console.log('transformed is already an observable');
     } else if (transformed instanceof Promise) {
-        console.log('creating observable from promise', transformed);
         transformed = Observable.from(transformed);
     } else {
-        console.log('creating observable from object', transformed);
         transformed = Observable.of(transformed);
     }
 
