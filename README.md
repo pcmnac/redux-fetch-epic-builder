@@ -2,11 +2,17 @@
 
 An utilitary lib for build "fetch actions" and generic EPICs handled by redux-observable.
 
+** Installation **
+
+npm i -S react-fetch-epic-builder
+
+** Example **
+
 Follow an example of use based on ducks structure.
 
 ```javascript
-import { createBuilder, successType, errorType } from 'utils/epic-builder';
-import store from 'stores/configureStore';
+import { createBuilder, successType, errorType } from 'react-fetch-epic-builder';
+import store from './store/configureStore';
 
 const buildEpic = createBuilder({
     jwtGetter: () => store.getState().app.jwt,
@@ -17,7 +23,7 @@ const GET_COMMENTS = 'posts/GET_COMMENTS';
 const GET_COMMENTS_SUCCESS = successType(GET_COMMENTS);
 const GET_COMMENTS_ERROR = errorType(GET_COMMENTS);
 
-const actionsType = {
+const actionTypes = {
     GET_COMMENTS,
     GET_COMMENTS_SUCCESS,
     GET_COMMENTS_ERROR,
@@ -65,7 +71,7 @@ const epics = [
 export default reducer;
 
 export {
-    actionsType,
+    actionTypes,
     actionCreators,
     epics,
 }
