@@ -3,7 +3,7 @@
   "description": "An utilitary lib for build \"fetch actions\" and generic EPICs handled by redux-observable.",
   "author": "pcmnac",
   "user": "pcmnac",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "scripts": {
     "start": "catalog start docs",
     "test": "jest",
