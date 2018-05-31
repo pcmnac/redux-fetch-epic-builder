@@ -2,11 +2,11 @@
 
 An utilitary lib for build "fetch actions" and generic EPICs handled by redux-observable.
 
-** Installation **
+**Installation**
 
 npm i -S react-fetch-epic-builder
 
-** Example **
+**Example**
 
 Follow an example of use based on ducks structure.
 
