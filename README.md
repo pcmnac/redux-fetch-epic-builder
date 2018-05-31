@@ -4,7 +4,9 @@ An utilitary lib for build "fetch actions" and generic EPICs handled by redux-ob
 
 **Installation**
 
+```
 npm i -S react-fetch-epic-builder
+```
 
 **Example**
 
